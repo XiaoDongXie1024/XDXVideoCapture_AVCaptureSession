@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>iconName</key>
+		<string>setting_video</string>
+		<key>groupName</key>
+		<string>Video</string>
+		<key>cells</key>
+		<array>
+			<dict>
+				<key>type</key>
+				<string>indicator</string>
+				<key>name</key>
+				<string>Resolution</string>
+			</dict>
+			<dict>
+				<key>type</key>
+				<string>indicator</string>
+				<key>name</key>
+				<string>Frame Rate</string>
+			</dict>
+		</array>
+	</dict>
+</array>
+</plist>

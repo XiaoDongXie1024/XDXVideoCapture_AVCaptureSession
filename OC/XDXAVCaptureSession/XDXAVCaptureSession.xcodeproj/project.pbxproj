@@ -7,15 +7,47 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		233426D9225A35D500D008C7 /* XDXFrameRateVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 233426D8225A35D500D008C7 /* XDXFrameRateVC.m */; };
+		234003342258D36000061CE0 /* XDXCameraHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 234003332258D36000061CE0 /* XDXCameraHandler.m */; };
+		234003392258D43900061CE0 /* XDXCameraModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 234003382258D43900061CE0 /* XDXCameraModel.m */; };
+		234129E82259DDC500075622 /* XDXSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 234129E72259DDC500075622 /* XDXSettingViewController.m */; };
+		234129EA2259DDDC00075622 /* XDXSettingViewController.plist in Resources */ = {isa = PBXBuildFile; fileRef = 234129E92259DDDC00075622 /* XDXSettingViewController.plist */; };
+		234129F22259DF7E00075622 /* NSObject+YYModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 234129EF2259DF7E00075622 /* NSObject+YYModel.m */; };
+		234129F32259DF7E00075622 /* YYClassInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 234129F02259DF7E00075622 /* YYClassInfo.m */; };
+		234129F62259DFD300075622 /* XDXSettingModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 234129F52259DFD300075622 /* XDXSettingModel.m */; };
+		234129FA2259F06600075622 /* XDXResolutionVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 234129F92259F06600075622 /* XDXResolutionVC.m */; };
+		2348274D225CDAF600A98D47 /* XDXAdjustFocusView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2348274C225CDAF600A98D47 /* XDXAdjustFocusView.m */; };
 		23B031A622539C9D004075CD /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 23B031A522539C9D004075CD /* AppDelegate.m */; };
 		23B031A922539C9D004075CD /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 23B031A822539C9D004075CD /* ViewController.m */; };
 		23B031AC22539C9D004075CD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 23B031AA22539C9D004075CD /* Main.storyboard */; };
 		23B031AE22539C9E004075CD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 23B031AD22539C9E004075CD /* Assets.xcassets */; };
 		23B031B122539C9E004075CD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 23B031AF22539C9E004075CD /* LaunchScreen.storyboard */; };
 		23B031B422539C9E004075CD /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 23B031B322539C9E004075CD /* main.m */; };
+		23B031BC22539EA3004075CD /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23B031BB22539EA3004075CD /* AVFoundation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		233426D7225A35D500D008C7 /* XDXFrameRateVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XDXFrameRateVC.h; sourceTree = "<group>"; };
+		233426D8225A35D500D008C7 /* XDXFrameRateVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XDXFrameRateVC.m; sourceTree = "<group>"; };
+		234003322258D36000061CE0 /* XDXCameraHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XDXCameraHandler.h; sourceTree = "<group>"; };
+		234003332258D36000061CE0 /* XDXCameraHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XDXCameraHandler.m; sourceTree = "<group>"; };
+		234003372258D43900061CE0 /* XDXCameraModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XDXCameraModel.h; sourceTree = "<group>"; };
+		234003382258D43900061CE0 /* XDXCameraModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XDXCameraModel.m; sourceTree = "<group>"; };
+		234129E62259DDC500075622 /* XDXSettingViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XDXSettingViewController.h; sourceTree = "<group>"; };
+		234129E72259DDC500075622 /* XDXSettingViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XDXSettingViewController.m; sourceTree = "<group>"; };
+		234129E92259DDDC00075622 /* XDXSettingViewController.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = XDXSettingViewController.plist; sourceTree = "<group>"; };
+		234129ED2259DF7E00075622 /* YYClassInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYClassInfo.h; sourceTree = "<group>"; };
+		234129EE2259DF7E00075622 /* YYModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYModel.h; sourceTree = "<group>"; };
+		234129EF2259DF7E00075622 /* NSObject+YYModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+YYModel.m"; sourceTree = "<group>"; };
+		234129F02259DF7E00075622 /* YYClassInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYClassInfo.m; sourceTree = "<group>"; };
+		234129F12259DF7E00075622 /* NSObject+YYModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+YYModel.h"; sourceTree = "<group>"; };
+		234129F42259DFD300075622 /* XDXSettingModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XDXSettingModel.h; sourceTree = "<group>"; };
+		234129F52259DFD300075622 /* XDXSettingModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XDXSettingModel.m; sourceTree = "<group>"; };
+		234129F82259F06600075622 /* XDXResolutionVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XDXResolutionVC.h; sourceTree = "<group>"; };
+		234129F92259F06600075622 /* XDXResolutionVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XDXResolutionVC.m; sourceTree = "<group>"; };
+		234129FB2259F2CA00075622 /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
+		2348274B225CDAF600A98D47 /* XDXAdjustFocusView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XDXAdjustFocusView.h; sourceTree = "<group>"; };
+		2348274C225CDAF600A98D47 /* XDXAdjustFocusView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XDXAdjustFocusView.m; sourceTree = "<group>"; };
 		23B031A122539C9D004075CD /* XDXAVCaptureSession.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XDXAVCaptureSession.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		23B031A422539C9D004075CD /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		23B031A522539C9D004075CD /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -26,6 +58,7 @@
 		23B031B022539C9E004075CD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		23B031B222539C9E004075CD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		23B031B322539C9E004075CD /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		23B031BB22539EA3004075CD /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,17 +66,63 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				23B031BC22539EA3004075CD /* AVFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		234129E52259DD7000075622 /* Setting */ = {
+			isa = PBXGroup;
+			children = (
+				234129F72259F02300075622 /* VideoSetting */,
+				234129E62259DDC500075622 /* XDXSettingViewController.h */,
+				234129E72259DDC500075622 /* XDXSettingViewController.m */,
+				234129E92259DDDC00075622 /* XDXSettingViewController.plist */,
+				234129F42259DFD300075622 /* XDXSettingModel.h */,
+				234129F52259DFD300075622 /* XDXSettingModel.m */,
+			);
+			path = Setting;
+			sourceTree = "<group>";
+		};
+		234129EB2259DF7200075622 /* 3rd */ = {
+			isa = PBXGroup;
+			children = (
+				234129EC2259DF7E00075622 /* YYModel */,
+			);
+			path = 3rd;
+			sourceTree = "<group>";
+		};
+		234129EC2259DF7E00075622 /* YYModel */ = {
+			isa = PBXGroup;
+			children = (
+				234129ED2259DF7E00075622 /* YYClassInfo.h */,
+				234129EE2259DF7E00075622 /* YYModel.h */,
+				234129EF2259DF7E00075622 /* NSObject+YYModel.m */,
+				234129F02259DF7E00075622 /* YYClassInfo.m */,
+				234129F12259DF7E00075622 /* NSObject+YYModel.h */,
+			);
+			path = YYModel;
+			sourceTree = "<group>";
+		};
+		234129F72259F02300075622 /* VideoSetting */ = {
+			isa = PBXGroup;
+			children = (
+				234129F82259F06600075622 /* XDXResolutionVC.h */,
+				234129F92259F06600075622 /* XDXResolutionVC.m */,
+				233426D7225A35D500D008C7 /* XDXFrameRateVC.h */,
+				233426D8225A35D500D008C7 /* XDXFrameRateVC.m */,
+			);
+			path = VideoSetting;
+			sourceTree = "<group>";
+		};
 		23B0319822539C9D004075CD = {
 			isa = PBXGroup;
 			children = (
 				23B031A322539C9D004075CD /* XDXAVCaptureSession */,
 				23B031A222539C9D004075CD /* Products */,
+				23B031BA22539EA3004075CD /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -58,6 +137,7 @@
 		23B031A322539C9D004075CD /* XDXAVCaptureSession */ = {
 			isa = PBXGroup;
 			children = (
+				234129E52259DD7000075622 /* Setting */,
 				23B031A422539C9D004075CD /* AppDelegate.h */,
 				23B031A522539C9D004075CD /* AppDelegate.m */,
 				23B031A722539C9D004075CD /* ViewController.h */,
@@ -67,8 +147,24 @@
 				23B031AF22539C9E004075CD /* LaunchScreen.storyboard */,
 				23B031B222539C9E004075CD /* Info.plist */,
 				23B031B322539C9E004075CD /* main.m */,
+				234003322258D36000061CE0 /* XDXCameraHandler.h */,
+				234003332258D36000061CE0 /* XDXCameraHandler.m */,
+				234003372258D43900061CE0 /* XDXCameraModel.h */,
+				234003382258D43900061CE0 /* XDXCameraModel.m */,
+				234129EB2259DF7200075622 /* 3rd */,
+				234129FB2259F2CA00075622 /* PrefixHeader.pch */,
+				2348274B225CDAF600A98D47 /* XDXAdjustFocusView.h */,
+				2348274C225CDAF600A98D47 /* XDXAdjustFocusView.m */,
 			);
 			path = XDXAVCaptureSession;
+			sourceTree = "<group>";
+		};
+		23B031BA22539EA3004075CD /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				23B031BB22539EA3004075CD /* AVFoundation.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -129,6 +225,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				23B031B122539C9E004075CD /* LaunchScreen.storyboard in Resources */,
+				234129EA2259DDDC00075622 /* XDXSettingViewController.plist in Resources */,
 				23B031AE22539C9E004075CD /* Assets.xcassets in Resources */,
 				23B031AC22539C9D004075CD /* Main.storyboard in Resources */,
 			);
@@ -141,8 +238,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				234003342258D36000061CE0 /* XDXCameraHandler.m in Sources */,
 				23B031A922539C9D004075CD /* ViewController.m in Sources */,
+				234129F22259DF7E00075622 /* NSObject+YYModel.m in Sources */,
+				234003392258D43900061CE0 /* XDXCameraModel.m in Sources */,
+				233426D9225A35D500D008C7 /* XDXFrameRateVC.m in Sources */,
+				234129F32259DF7E00075622 /* YYClassInfo.m in Sources */,
 				23B031B422539C9E004075CD /* main.m in Sources */,
+				234129E82259DDC500075622 /* XDXSettingViewController.m in Sources */,
+				234129FA2259F06600075622 /* XDXResolutionVC.m in Sources */,
+				2348274D225CDAF600A98D47 /* XDXAdjustFocusView.m in Sources */,
+				234129F62259DFD300075622 /* XDXSettingModel.m in Sources */,
 				23B031A622539C9D004075CD /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -287,6 +393,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = YDEVQQ22JR;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = XDXAVCaptureSession/PrefixHeader.pch;
 				INFOPLIST_FILE = XDXAVCaptureSession/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -304,6 +412,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = YDEVQQ22JR;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = XDXAVCaptureSession/PrefixHeader.pch;
 				INFOPLIST_FILE = XDXAVCaptureSession/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
