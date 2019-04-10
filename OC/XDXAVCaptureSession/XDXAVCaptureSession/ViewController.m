@@ -31,16 +31,16 @@
     self.settingVC = [[XDXSettingViewController alloc] init];
     
     XDXCameraModel *model = [[XDXCameraModel alloc] initWithPreviewView:self.view
-                                                                 preset:AVCaptureSessionPreset640x480
+                                                                 preset:AVCaptureSessionPreset1280x720
                                                               frameRate:30
-                                                       resolutionHeight:480
+                                                       resolutionHeight:720
                                                             videoFormat:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange
                                                               torchMode:AVCaptureTorchModeOff
                                                               focusMode:AVCaptureFocusModeLocked
                                                            exposureMode:AVCaptureExposureModeContinuousAutoExposure
                                                               flashMode:AVCaptureFlashModeAuto
                                                        whiteBalanceMode:AVCaptureWhiteBalanceModeContinuousAutoWhiteBalance
-                                                               position:AVCaptureDevicePositionFront
+                                                               position:AVCaptureDevicePositionBack
                                                            videoGravity:AVLayerVideoGravityResizeAspect
                                                        videoOrientation:AVCaptureVideoOrientationLandscapeRight
                                              isEnableVideoStabilization:YES];

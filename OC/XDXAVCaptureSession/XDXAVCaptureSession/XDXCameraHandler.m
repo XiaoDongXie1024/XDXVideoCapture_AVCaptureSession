@@ -32,6 +32,7 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
 
 @property (nonatomic, strong) AVCaptureSession *session;
 @property (nonatomic, strong) AVCaptureDeviceInput *input;
+@property (nonatomic, strong) AVCaptureVideoDataOutput *videoDataOutput;
 @property (nonatomic, strong) AVCaptureVideoPreviewLayer *videoPreviewLayer;
 
 @property (nonatomic, assign) int captureVideoFPS;
@@ -142,6 +143,7 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
     AVCaptureAudioDataOutput *audioDataOutput = [[AVCaptureAudioDataOutput alloc] init];
     [session addOutput:videoDataOutput];
     [session addOutput:audioDataOutput];
+    self.videoDataOutput = videoDataOutput;
     
     videoDataOutput.videoSettings = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:model.videoFormat]
                                                                 forKey:(id)kCVPixelBufferPixelFormatTypeKey];
@@ -231,8 +233,12 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
 }
 
 - (void)setFocusPoint:(CGPoint)point {
-    CGPoint convertedFocusPoint = [self convertToPointOfInterestFromViewCoordinates:point];
-    [self autoFocusAtPoint:convertedFocusPoint];
+    if ([self.input.device isFocusPointOfInterestSupported]) {
+        CGPoint convertedFocusPoint = [self convertToPointOfInterestFromViewCoordinates:point];
+        [self autoFocusAtPoint:convertedFocusPoint];
+    }else {
+        NSLog(@"Current device not support focus");
+    }
 }
 
 #pragma mark - Private
@@ -503,6 +509,7 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
 
     // Convert UIKit coordinate to Focus Point(0.0~1.1)
     pointOfInterest = [captureVideoPreviewLayer captureDevicePointOfInterestForPoint:viewCoordinates];
+    // NSLog(@"Focus - Auto test: %@",NSStringFromCGPoint(pointOfInterest));
     
     return pointOfInterest;
 }
@@ -521,6 +528,74 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
             
         }
     }
+}
+
+- (CGPoint)manualConvertFocusPoint:(CGPoint)point {
+    AVCaptureVideoPreviewLayer *captureVideoPreviewLayer = self.videoPreviewLayer;
+    CGPoint pointOfInterest = CGPointMake(.5f, .5f);
+    CGSize frameSize = self.cameraModel.previewView.frame.size;
+    if ([[self.videoDataOutput connectionWithMediaType:AVMediaTypeVideo] isVideoMirrored]) {
+        point.x = frameSize.width - point.x;
+    }
+    
+    for (AVCaptureInputPort *port in [self.input ports]) {
+        if ([port mediaType] == AVMediaTypeVideo) {
+            CGRect cleanAperture = CMVideoFormatDescriptionGetCleanAperture([port formatDescription], YES);
+            CGSize resolutionSize = cleanAperture.size;
+            
+            CGFloat resolutionRatio = resolutionSize.width / resolutionSize.height;
+            CGFloat screenSizeRatio = frameSize.width / frameSize.height;
+            CGFloat xc = .5f;
+            CGFloat yc = .5f;
+        
+            if (resolutionRatio == screenSizeRatio) {
+                xc = point.x / frameSize.width;
+                yc = point.y / frameSize.height;
+            }else if (resolutionRatio > screenSizeRatio) {
+                if ([[captureVideoPreviewLayer videoGravity] isEqualToString:AVLayerVideoGravityResizeAspectFill]) {
+                    CGFloat needScreenWidth = resolutionRatio * frameSize.height;
+                    CGFloat cropWidth = (needScreenWidth - frameSize.width) / 2;
+                    xc = (cropWidth + point.x) / needScreenWidth;
+                    yc = point.y / frameSize.height;
+                }else if ([[captureVideoPreviewLayer videoGravity] isEqualToString:AVLayerVideoGravityResizeAspect]){
+                    CGFloat needScreenHeight = frameSize.width * (1/resolutionRatio);
+                    CGFloat blackBarLength   = (frameSize.height - needScreenHeight) / 2;
+                    xc = point.x / frameSize.width;
+                    yc = (point.y - blackBarLength) / needScreenHeight;
+                }else if ([[captureVideoPreviewLayer videoGravity] isEqualToString:AVLayerVideoGravityResize]) {
+                    xc = point.x / frameSize.width;
+                    yc = point.y / frameSize.height;
+                }
+            }else {
+                if ([[captureVideoPreviewLayer videoGravity] isEqualToString:AVLayerVideoGravityResizeAspectFill]) {
+                    CGFloat needScreenHeight = (1/resolutionRatio) * frameSize.width;
+                    CGFloat cropHeight = (needScreenHeight - frameSize.height) / 2;
+                    xc = point.x / frameSize.width;
+                    yc = (cropHeight + point.y) / needScreenHeight;
+                }else if ([[captureVideoPreviewLayer videoGravity] isEqualToString:AVLayerVideoGravityResizeAspect]){
+                    CGFloat needScreenWidth = frameSize.height * resolutionRatio;
+                    CGFloat blackBarLength   = (frameSize.width - needScreenWidth) / 2;
+                    xc = (point.x - blackBarLength) / needScreenWidth;
+                    yc = point.y / frameSize.height;
+                }else if ([[captureVideoPreviewLayer videoGravity] isEqualToString:AVLayerVideoGravityResize]) {
+                    xc = point.x / frameSize.width;
+                    yc = point.y / frameSize.height;
+                }
+            }
+            pointOfInterest = CGPointMake(xc, yc);
+        }
+    }
+    
+    if (self.cameraModel.position == AVCaptureDevicePositionBack) {
+        if (captureVideoPreviewLayer.connection.videoOrientation == AVCaptureVideoOrientationLandscapeLeft) {
+            pointOfInterest = CGPointMake(1-pointOfInterest.x, 1-pointOfInterest.y);
+        }
+    }else {
+        pointOfInterest = CGPointMake(pointOfInterest.x, 1-pointOfInterest.y);
+    }
+    
+    //NSLog(@"Focus - manu test: %@",NSStringFromCGPoint(pointOfInterest));
+    return pointOfInterest;
 }
 
 #pragma mark - Delegate
