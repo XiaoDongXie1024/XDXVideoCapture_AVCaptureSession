@@ -31,9 +31,9 @@
     self.settingVC = [[XDXSettingViewController alloc] init];
     
     XDXCameraModel *model = [[XDXCameraModel alloc] initWithPreviewView:self.view
-                                                                 preset:AVCaptureSessionPreset1920x1080
+                                                                 preset:AVCaptureSessionPreset640x480
                                                               frameRate:30
-                                                       resolutionHeight:1080
+                                                       resolutionHeight:480
                                                             videoFormat:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange
                                                               torchMode:AVCaptureTorchModeOff
                                                               focusMode:AVCaptureFocusModeLocked
