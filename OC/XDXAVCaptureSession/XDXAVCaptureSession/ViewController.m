@@ -78,6 +78,12 @@
     UITapGestureRecognizer *singleClickGestureRecognizer = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(handleSingleClickGesture:)];
     [self.view addGestureRecognizer:singleClickGestureRecognizer];
     
+    [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(deviceOrientationDidChange:)
+                                                 name:UIDeviceOrientationDidChangeNotification
+                                               object:nil];
+    
     XDXAdjustFocusView *focusView = [[XDXAdjustFocusView alloc] initWithFrame:CGRectMake(0, 0, 80, 80)];
     self.focusView = focusView;
     focusView.hidden = YES;
@@ -146,5 +152,19 @@
     NSDictionary *dic = notification.userInfo;
     int newFrameRate = [[dic objectForKey:kFrameRateChangedKey] intValue];
     [self.cameraHandler setCameraForHFRWithFrameRate:newFrameRate];
+}
+
+- (void)deviceOrientationDidChange:(NSNotification *)notification {
+    //Obtaining the current device orientation
+    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+    
+//    NSLog(@"Curent UIInterfaceOrientation is %ld",(long)orientation);
+    
+    if(orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight) {
+        NSLog(@"Device Left");
+        [self.cameraHandler adjustVideoOrientationByScreenOrientation:orientation];
+    }else {
+        NSLog(@"App not support");
+    }
 }
 @end

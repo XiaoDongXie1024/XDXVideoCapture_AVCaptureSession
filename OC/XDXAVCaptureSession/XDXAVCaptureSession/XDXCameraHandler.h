@@ -7,6 +7,7 @@
 //
 
 #import <AVFoundation/AVFoundation.h>
+#import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -89,6 +90,13 @@ NS_ASSUME_NONNULL_BEGIN
  * Set open / close torch
  */
 - (void)setTorchState:(BOOL)isOpen;
+
+
+/**
+ * Set video orientation by screen orientation
+ */
+- (void)adjustVideoOrientationByScreenOrientation:(UIDeviceOrientation)orientation;
+
 @end
 
 NS_ASSUME_NONNULL_END

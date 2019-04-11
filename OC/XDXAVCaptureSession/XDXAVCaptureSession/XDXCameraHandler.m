@@ -257,6 +257,14 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
     [self setTorchState:isOpen session:self.session device:self.input.device];
 }
 
+- (void)adjustVideoOrientationByScreenOrientation:(UIDeviceOrientation)orientation {
+    [self adjustVideoOrientationByScreenOrientation:orientation
+                                       previewFrame:self.cameraModel.previewView.frame
+                                       previewLayer:self.videoPreviewLayer
+                                            session:self.session
+                                        videoOutput:self.videoDataOutput];
+}
+
 #pragma mark - Private
 - (void)switchCameraWithSession:(AVCaptureSession *)session input:(AVCaptureDeviceInput *)input videoFormat:(OSType)videoFormat resolutionHeight:(CGFloat)resolutionHeight frameRate:(int)frameRate {
     if (input) {
@@ -634,6 +642,49 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
         [session commitConfiguration];
     }else {
         NSLog(@"The device not support torch!");
+    }
+}
+
+#pragma mark Orientation
+- (void)adjustVideoOrientationByScreenOrientation:(UIDeviceOrientation)orientation previewFrame:(CGRect)previewFrame previewLayer:(AVCaptureVideoPreviewLayer *)previewLayer session:(AVCaptureSession *)session videoOutput:(AVCaptureVideoDataOutput *)videoOutput {
+    if(session != NULL) {
+        [session beginConfiguration];
+        
+        [previewLayer setFrame:previewFrame];
+        
+        switch (orientation) {
+            case UIInterfaceOrientationPortrait:
+                [self adjustAVOutputDataOrientation:AVCaptureVideoOrientationPortrait videoOutput:videoOutput];
+                break;
+            case UIInterfaceOrientationPortraitUpsideDown:
+                [self adjustAVOutputDataOrientation:AVCaptureVideoOrientationPortraitUpsideDown videoOutput:videoOutput];
+                break;
+            case UIInterfaceOrientationLandscapeLeft:
+                [[previewLayer connection] setVideoOrientation:AVCaptureVideoOrientationLandscapeLeft];
+                [self adjustAVOutputDataOrientation:AVCaptureVideoOrientationLandscapeLeft videoOutput:videoOutput];
+                break;
+            case UIInterfaceOrientationLandscapeRight:
+                [[previewLayer connection] setVideoOrientation:AVCaptureVideoOrientationLandscapeRight];
+                [self adjustAVOutputDataOrientation:AVCaptureVideoOrientationLandscapeRight videoOutput:videoOutput];
+                break;
+                
+            default:
+                break;
+        }
+        
+        [session commitConfiguration];
+    }
+}
+
+-(void)adjustAVOutputDataOrientation:(AVCaptureVideoOrientation)orientation videoOutput:(AVCaptureVideoDataOutput *)videoOutput {
+    for(AVCaptureConnection *connection in videoOutput.connections) {
+        for(AVCaptureInputPort *port in [connection inputPorts]) {
+            if([[port mediaType] isEqual:AVMediaTypeVideo]) {
+                if([connection isVideoOrientationSupported]) {
+                    [connection setVideoOrientation:orientation];
+                }
+            }
+        }
     }
 }
 
