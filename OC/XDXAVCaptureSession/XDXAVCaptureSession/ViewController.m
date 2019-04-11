@@ -19,6 +19,7 @@
 @property (nonatomic, strong) XDXSettingViewController *settingVC;
 
 @property (nonatomic, strong) XDXAdjustFocusView *focusView;
+@property (weak, nonatomic) IBOutlet UISlider *exposureSlider;
 
 @end
 
@@ -27,9 +28,17 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    
-    self.settingVC = [[XDXSettingViewController alloc] init];
-    
+    [self configureCamera];
+    [self configureData];
+    [self setupUI];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+}
+
+#pragma mark - Init
+- (void)configureCamera {
     XDXCameraModel *model = [[XDXCameraModel alloc] initWithPreviewView:self.view
                                                                  preset:AVCaptureSessionPreset1280x720
                                                               frameRate:30
@@ -44,7 +53,7 @@
                                                            videoGravity:AVLayerVideoGravityResizeAspect
                                                        videoOrientation:AVCaptureVideoOrientationLandscapeRight
                                              isEnableVideoStabilization:YES];
-
+    
     XDXCameraHandler *handler = [[XDXCameraHandler alloc] init];
     handler.delegate = self;
     self.cameraHandler = handler;
@@ -57,7 +66,14 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveResolutionChanged:) name:kNotifyResolutionChanged object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveFrameRateChanged:) name:kNotifyFrameRateChanged object:nil];
-    
+}
+
+- (void) configureData {
+    self.settingVC = [[XDXSettingViewController alloc] init];
+}
+
+#pragma mark - UI
+- (void)setupUI {
     UITapGestureRecognizer *singleClickGestureRecognizer = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(handleSingleClickGesture:)];
     [self.view addGestureRecognizer:singleClickGestureRecognizer];
     
@@ -65,17 +81,20 @@
     self.focusView = focusView;
     focusView.hidden = YES;
     [self.view addSubview:focusView];
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
+    
+    [self.cameraHandler setExposureWithNewValue:0];
+    self.exposureSlider.maximumValue = [self.cameraHandler getMaxExposureValue];
+    self.exposureSlider.minimumValue = [self.cameraHandler getMinExposureValue];
+    self.exposureSlider.value = 0;
+    [self.exposureSlider addTarget:self action:@selector(sliderValueChanged:) forControlEvents:UIControlEventValueChanged];
+//    NSLog(@"max:%f,min:%f",self.exposureSlider.maximumValue,self.exposureSlider.minimumValue);
+    [self.view bringSubviewToFront: self.exposureSlider];
 }
 
 #pragma mark - Gesture
 - (void)handleSingleClickGesture:(UITapGestureRecognizer *)recognizer  {
     CGPoint tapPoint = [recognizer locationInView:recognizer.view];
 
-    [self.view bringSubviewToFront:self.focusView];
     [self.focusView setFrameByAnimateWithCenter:tapPoint];
     [self.cameraHandler setFocusPoint:tapPoint];
 }
@@ -88,6 +107,10 @@
 - (IBAction)settingBtnDidClicked:(id)sender {
     self.settingVC.cameraHandler = self.cameraHandler;
     [self presentViewController:[[UINavigationController alloc] initWithRootViewController:self.settingVC] animated:YES completion:nil];
+}
+
+- (void)sliderValueChanged:(UISlider *)slider {
+    [self.cameraHandler setExposureWithNewValue:slider.value];
 }
 
 #pragma mark - Delegate

@@ -71,6 +71,19 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)setFocusPoint:(CGPoint)point;
 
+
+/**
+ * Get max/min exposure value for camera.
+ */
+- (CGFloat)getMaxExposureValue;
+- (CGFloat)getMinExposureValue;
+
+
+/**
+ * Set camera exposure value (-8 ~ 8)
+ */
+- (void)setExposureWithNewValue:(CGFloat)newExposureValue;
+
 @end
 
 NS_ASSUME_NONNULL_END

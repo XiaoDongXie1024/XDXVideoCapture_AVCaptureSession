@@ -241,6 +241,18 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
     }
 }
 
+- (CGFloat)getMaxExposureValue {
+    return self.input.device.maxExposureTargetBias;
+}
+
+- (CGFloat)getMinExposureValue {
+    return self.input.device.minExposureTargetBias;
+}
+
+- (void)setExposureWithNewValue:(CGFloat)newExposureValue {
+    [self setExposureWithNewValue:newExposureValue device:self.input.device];
+}
+
 #pragma mark - Private
 - (void)switchCameraWithSession:(AVCaptureSession *)session input:(AVCaptureDeviceInput *)input videoFormat:(OSType)videoFormat resolutionHeight:(CGFloat)resolutionHeight frameRate:(int)frameRate {
     if (input) {
@@ -596,6 +608,15 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
     
     //NSLog(@"Focus - manu test: %@",NSStringFromCGPoint(pointOfInterest));
     return pointOfInterest;
+}
+
+#pragma mark - Exposure
+- (void)setExposureWithNewValue:(CGFloat)newExposureValue device:(AVCaptureDevice *)device {
+    NSError *error;
+    if ([device lockForConfiguration:&error]) {
+        [device setExposureTargetBias:newExposureValue completionHandler:nil];
+        [device unlockForConfiguration];
+    }
 }
 
 #pragma mark - Delegate
