@@ -49,12 +49,29 @@
                                                 <action selector="settingBtnDidClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="cP2-WJ-UHM"/>
                                             </connections>
                                         </button>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aCZ-SV-2QW">
+                                            <rect key="frame" x="108" y="0.0" width="50" height="59"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="50" id="7yc-2u-OaA"/>
+                                                <constraint firstAttribute="width" constant="50" id="KrU-97-D9Z"/>
+                                                <constraint firstAttribute="width" relation="lessThanOrEqual" constant="50" id="Nx9-ON-hGh"/>
+                                            </constraints>
+                                            <state key="normal" title="Torch">
+                                                <color key="titleColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            </state>
+                                            <connections>
+                                                <action selector="torchBtnDidClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="4Cc-Vo-jLR"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                     <constraints>
                                         <constraint firstItem="l1F-0T-v0Z" firstAttribute="leading" secondItem="0Qw-pp-NA5" secondAttribute="trailing" constant="8" id="H6M-yG-bcn"/>
                                         <constraint firstAttribute="bottom" secondItem="l1F-0T-v0Z" secondAttribute="bottom" id="Xa3-Rm-L1j"/>
+                                        <constraint firstAttribute="bottom" secondItem="aCZ-SV-2QW" secondAttribute="bottom" id="Zg7-85-E3s"/>
+                                        <constraint firstItem="aCZ-SV-2QW" firstAttribute="top" secondItem="qf2-Cn-NPu" secondAttribute="top" id="r6L-bh-CHg"/>
                                         <constraint firstAttribute="bottom" secondItem="0Qw-pp-NA5" secondAttribute="bottom" id="sqi-hd-TWB"/>
                                         <constraint firstItem="l1F-0T-v0Z" firstAttribute="top" secondItem="qf2-Cn-NPu" secondAttribute="top" id="teu-RH-Bbh"/>
+                                        <constraint firstItem="aCZ-SV-2QW" firstAttribute="leading" secondItem="l1F-0T-v0Z" secondAttribute="trailing" id="vbK-15-NOO"/>
                                         <constraint firstItem="0Qw-pp-NA5" firstAttribute="leading" secondItem="qf2-Cn-NPu" secondAttribute="leading" id="x51-ks-Eiu"/>
                                         <constraint firstItem="0Qw-pp-NA5" firstAttribute="top" secondItem="qf2-Cn-NPu" secondAttribute="top" id="x5c-ff-iCD"/>
                                     </constraints>
@@ -95,6 +112,7 @@
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="exposureSlider" destination="iEH-k3-6xR" id="wTv-aO-Rfv"/>
+                        <outlet property="exposureView" destination="pGP-iZ-1Dq" id="FHc-2R-0Uw"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

@@ -84,6 +84,11 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)setExposureWithNewValue:(CGFloat)newExposureValue;
 
+
+/**
+ * Set open / close torch
+ */
+- (void)setTorchState:(BOOL)isOpen;
 @end
 
 NS_ASSUME_NONNULL_END

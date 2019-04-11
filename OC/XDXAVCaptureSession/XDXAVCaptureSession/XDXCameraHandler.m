@@ -253,6 +253,10 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
     [self setExposureWithNewValue:newExposureValue device:self.input.device];
 }
 
+- (void)setTorchState:(BOOL)isOpen {
+    [self setTorchState:isOpen session:self.session device:self.input.device];
+}
+
 #pragma mark - Private
 - (void)switchCameraWithSession:(AVCaptureSession *)session input:(AVCaptureDeviceInput *)input videoFormat:(OSType)videoFormat resolutionHeight:(CGFloat)resolutionHeight frameRate:(int)frameRate {
     if (input) {
@@ -610,12 +614,26 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
     return pointOfInterest;
 }
 
-#pragma mark - Exposure
+#pragma mark Exposure
 - (void)setExposureWithNewValue:(CGFloat)newExposureValue device:(AVCaptureDevice *)device {
     NSError *error;
     if ([device lockForConfiguration:&error]) {
         [device setExposureTargetBias:newExposureValue completionHandler:nil];
         [device unlockForConfiguration];
+    }
+}
+
+#pragma mark Torch
+- (void)setTorchState:(BOOL)isOpen session:(AVCaptureSession *)session device:(AVCaptureDevice *)device {
+    if ([device hasTorch]) {
+        NSError *error;
+        [session beginConfiguration];
+        [device lockForConfiguration:&error];
+        device.torchMode = isOpen ? AVCaptureTorchModeOn : AVCaptureTorchModeOff;
+        [device unlockForConfiguration];
+        [session commitConfiguration];
+    }else {
+        NSLog(@"The device not support torch!");
     }
 }
 

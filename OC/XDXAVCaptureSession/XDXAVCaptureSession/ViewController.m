@@ -20,6 +20,7 @@
 
 @property (nonatomic, strong) XDXAdjustFocusView *focusView;
 @property (weak, nonatomic) IBOutlet UISlider *exposureSlider;
+@property (weak, nonatomic) IBOutlet UIView *exposureView;
 
 @end
 
@@ -88,7 +89,7 @@
     self.exposureSlider.value = 0;
     [self.exposureSlider addTarget:self action:@selector(sliderValueChanged:) forControlEvents:UIControlEventValueChanged];
 //    NSLog(@"max:%f,min:%f",self.exposureSlider.maximumValue,self.exposureSlider.minimumValue);
-    [self.view bringSubviewToFront: self.exposureSlider];
+    [self.view bringSubviewToFront: self.exposureView];
 }
 
 #pragma mark - Gesture
@@ -111,6 +112,11 @@
 
 - (void)sliderValueChanged:(UISlider *)slider {
     [self.cameraHandler setExposureWithNewValue:slider.value];
+}
+
+- (IBAction)torchBtnDidClicked:(UIButton *)button {
+    button.selected = !button.isSelected;
+    [self.cameraHandler setTorchState:button.selected];
 }
 
 #pragma mark - Delegate
