@@ -97,6 +97,11 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)adjustVideoOrientationByScreenOrientation:(UIDeviceOrientation)orientation;
 
+
+/**
+ * Set video gravity.
+ */
+- (void)setVideoGravity:(AVLayerVideoGravity)videoGravity;
 @end
 
 NS_ASSUME_NONNULL_END

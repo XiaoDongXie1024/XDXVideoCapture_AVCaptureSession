@@ -125,6 +125,29 @@
     [self.cameraHandler setTorchState:button.selected];
 }
 
+- (IBAction)videoGravityBtnDidClicked:(id)sender {
+    static int i = 0;
+    i++;
+    switch (i) {
+        case 1:
+            [self.cameraHandler setVideoGravity:AVLayerVideoGravityResizeAspect];
+            break;
+        case 2:
+            [self.cameraHandler setVideoGravity:AVLayerVideoGravityResizeAspectFill];
+            break;
+        case 3:
+            [self.cameraHandler setVideoGravity:AVLayerVideoGravityResize];
+            break;
+        default:
+            break;
+    }
+    
+    if (i == 3) {
+        i = 0;
+    }
+    
+}
+
 #pragma mark - Delegate
 - (void)xdxCaptureOutput:(AVCaptureOutput *)output didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
     CVPixelBufferRef pix = CMSampleBufferGetImageBuffer(sampleBuffer);

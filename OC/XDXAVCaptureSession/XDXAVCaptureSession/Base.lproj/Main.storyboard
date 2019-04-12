@@ -63,17 +63,35 @@
                                                 <action selector="torchBtnDidClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="4Cc-Vo-jLR"/>
                                             </connections>
                                         </button>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eHp-Ao-d3J">
+                                            <rect key="frame" x="158" y="0.0" width="50" height="59"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" relation="lessThanOrEqual" constant="50" id="EZr-fl-ixm"/>
+                                                <constraint firstAttribute="width" relation="lessThanOrEqual" constant="50" id="QFi-KZ-Jf8"/>
+                                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="50" id="uhH-cI-xI3"/>
+                                                <constraint firstAttribute="width" constant="50" id="wXj-HL-ceu"/>
+                                            </constraints>
+                                            <state key="normal" title="Full">
+                                                <color key="titleColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            </state>
+                                            <connections>
+                                                <action selector="videoGravityBtnDidClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ozK-VR-bJp"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                     <constraints>
+                                        <constraint firstItem="eHp-Ao-d3J" firstAttribute="leading" secondItem="aCZ-SV-2QW" secondAttribute="trailing" id="2r6-sp-uzi"/>
                                         <constraint firstItem="l1F-0T-v0Z" firstAttribute="leading" secondItem="0Qw-pp-NA5" secondAttribute="trailing" constant="8" id="H6M-yG-bcn"/>
                                         <constraint firstAttribute="bottom" secondItem="l1F-0T-v0Z" secondAttribute="bottom" id="Xa3-Rm-L1j"/>
                                         <constraint firstAttribute="bottom" secondItem="aCZ-SV-2QW" secondAttribute="bottom" id="Zg7-85-E3s"/>
+                                        <constraint firstAttribute="bottom" secondItem="eHp-Ao-d3J" secondAttribute="bottom" id="nPA-Wu-bit"/>
                                         <constraint firstItem="aCZ-SV-2QW" firstAttribute="top" secondItem="qf2-Cn-NPu" secondAttribute="top" id="r6L-bh-CHg"/>
                                         <constraint firstAttribute="bottom" secondItem="0Qw-pp-NA5" secondAttribute="bottom" id="sqi-hd-TWB"/>
                                         <constraint firstItem="l1F-0T-v0Z" firstAttribute="top" secondItem="qf2-Cn-NPu" secondAttribute="top" id="teu-RH-Bbh"/>
                                         <constraint firstItem="aCZ-SV-2QW" firstAttribute="leading" secondItem="l1F-0T-v0Z" secondAttribute="trailing" id="vbK-15-NOO"/>
                                         <constraint firstItem="0Qw-pp-NA5" firstAttribute="leading" secondItem="qf2-Cn-NPu" secondAttribute="leading" id="x51-ks-Eiu"/>
                                         <constraint firstItem="0Qw-pp-NA5" firstAttribute="top" secondItem="qf2-Cn-NPu" secondAttribute="top" id="x5c-ff-iCD"/>
+                                        <constraint firstItem="eHp-Ao-d3J" firstAttribute="top" secondItem="qf2-Cn-NPu" secondAttribute="top" id="xlP-XQ-hfJ"/>
                                     </constraints>
                                 </view>
                                 <constraints>

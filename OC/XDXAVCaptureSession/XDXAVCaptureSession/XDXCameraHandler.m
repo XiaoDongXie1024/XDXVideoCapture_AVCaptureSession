@@ -265,6 +265,11 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
                                         videoOutput:self.videoDataOutput];
 }
 
+- (void)setVideoGravity:(AVLayerVideoGravity)videoGravity {
+    [self setVideoGravity:videoGravity
+             previewLayer:self.videoPreviewLayer
+                  session:self.session];
+}
 #pragma mark - Private
 - (void)switchCameraWithSession:(AVCaptureSession *)session input:(AVCaptureDeviceInput *)input videoFormat:(OSType)videoFormat resolutionHeight:(CGFloat)resolutionHeight frameRate:(int)frameRate {
     if (input) {
@@ -686,6 +691,13 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
             }
         }
     }
+}
+
+#pragma mark Gravity
+- (void)setVideoGravity:(AVLayerVideoGravity)videoGravity previewLayer:(AVCaptureVideoPreviewLayer *)previewLayer session:(AVCaptureSession *)session {
+    [session beginConfiguration];
+    [previewLayer setVideoGravity:videoGravity];
+    [session commitConfiguration];
 }
 
 #pragma mark - Delegate
