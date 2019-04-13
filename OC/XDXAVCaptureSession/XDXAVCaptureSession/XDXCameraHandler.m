@@ -398,24 +398,24 @@
     }
 }
 
-- (void)setCameraResolutionByPresetWithHeight:(int)height {
+- (void)setCameraResolutionByPresetWithHeight:(int)height session:(AVCaptureSession *)session {
     /*
      Note: the method only support your frame rate <= 30 because we must use `activeFormat` when frame rate > 30, the `activeFormat` and `sessionPreset` are exclusive
      */
     AVCaptureSessionPreset preset = [self getSessionPresetByResolutionHeight:height];
-    if ([self.session.sessionPreset isEqualToString:preset]) {
+    if ([session.sessionPreset isEqualToString:preset]) {
         NSLog(@"Needn't to set camera resolution repeatly !");
         return;
     }
     
-    if (![self.session canSetSessionPreset:preset]) {
+    if (![session canSetSessionPreset:preset]) {
         NSLog(@"Can't set the sessionPreset !");
         return;
     }
     
-    [self.session beginConfiguration];
-    self.session.sessionPreset = preset;
-    [self.session commitConfiguration];
+    [session beginConfiguration];
+    session.sessionPreset = preset;
+    [session commitConfiguration];
 }
 
 - (AVCaptureSessionPreset)getSessionPresetByResolutionHeight:(int)resolutionHeight {
