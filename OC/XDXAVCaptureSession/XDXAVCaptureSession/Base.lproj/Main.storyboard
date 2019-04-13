@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
-    <device id="retina6_1" orientation="landscape">
+    <device id="retina5_9" orientation="landscape">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -15,63 +15,57 @@
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="896" height="414"/>
+                        <rect key="frame" x="0.0" y="0.0" width="812" height="375"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SME-Eq-zmL">
-                                <rect key="frame" x="348" y="295" width="200" height="59"/>
+                                <rect key="frame" x="296" y="253" width="220" height="59"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="qf2-Cn-NPu">
-                                    <rect key="frame" x="0.0" y="0.0" width="200" height="59"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="220" height="59"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0Qw-pp-NA5">
-                                            <rect key="frame" x="0.0" y="0.0" width="50" height="59"/>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0Qw-pp-NA5">
+                                            <rect key="frame" x="10" y="0.0" width="50" height="59"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="50" id="9Fi-HG-up8"/>
                                             </constraints>
-                                            <state key="normal" title="Switch">
+                                            <state key="normal" image="icon_inverse">
                                                 <color key="titleColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             </state>
                                             <connections>
                                                 <action selector="switchCameraDidClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Cwi-MF-apU"/>
                                             </connections>
                                         </button>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="l1F-0T-v0Z">
-                                            <rect key="frame" x="58" y="0.0" width="50" height="59"/>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="l1F-0T-v0Z">
+                                            <rect key="frame" x="68" y="0.0" width="50" height="59"/>
                                             <constraints>
-                                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="50" id="Xig-Sc-9um"/>
                                                 <constraint firstAttribute="width" constant="50" id="odL-fl-Efl"/>
                                             </constraints>
-                                            <state key="normal" title="Setting">
+                                            <state key="normal" image="toolbar_icon_set">
                                                 <color key="titleColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             </state>
                                             <connections>
                                                 <action selector="settingBtnDidClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="cP2-WJ-UHM"/>
                                             </connections>
                                         </button>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aCZ-SV-2QW">
-                                            <rect key="frame" x="108" y="0.0" width="50" height="59"/>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aCZ-SV-2QW">
+                                            <rect key="frame" x="118" y="0.0" width="50" height="59"/>
                                             <constraints>
-                                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="50" id="7yc-2u-OaA"/>
                                                 <constraint firstAttribute="width" constant="50" id="KrU-97-D9Z"/>
-                                                <constraint firstAttribute="width" relation="lessThanOrEqual" constant="50" id="Nx9-ON-hGh"/>
                                             </constraints>
-                                            <state key="normal" title="Torch">
+                                            <state key="normal" image="icon_flashon">
                                                 <color key="titleColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             </state>
                                             <connections>
                                                 <action selector="torchBtnDidClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="4Cc-Vo-jLR"/>
                                             </connections>
                                         </button>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eHp-Ao-d3J">
-                                            <rect key="frame" x="158" y="0.0" width="50" height="59"/>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eHp-Ao-d3J">
+                                            <rect key="frame" x="168" y="0.0" width="50" height="59"/>
                                             <constraints>
-                                                <constraint firstAttribute="width" relation="lessThanOrEqual" constant="50" id="EZr-fl-ixm"/>
-                                                <constraint firstAttribute="width" relation="lessThanOrEqual" constant="50" id="QFi-KZ-Jf8"/>
-                                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="50" id="uhH-cI-xI3"/>
                                                 <constraint firstAttribute="width" constant="50" id="wXj-HL-ceu"/>
                                             </constraints>
-                                            <state key="normal" title="Full">
+                                            <state key="normal" image="icon_pip">
                                                 <color key="titleColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             </state>
                                             <connections>
@@ -89,19 +83,25 @@
                                         <constraint firstAttribute="bottom" secondItem="0Qw-pp-NA5" secondAttribute="bottom" id="sqi-hd-TWB"/>
                                         <constraint firstItem="l1F-0T-v0Z" firstAttribute="top" secondItem="qf2-Cn-NPu" secondAttribute="top" id="teu-RH-Bbh"/>
                                         <constraint firstItem="aCZ-SV-2QW" firstAttribute="leading" secondItem="l1F-0T-v0Z" secondAttribute="trailing" id="vbK-15-NOO"/>
-                                        <constraint firstItem="0Qw-pp-NA5" firstAttribute="leading" secondItem="qf2-Cn-NPu" secondAttribute="leading" id="x51-ks-Eiu"/>
+                                        <constraint firstItem="0Qw-pp-NA5" firstAttribute="leading" secondItem="qf2-Cn-NPu" secondAttribute="leading" constant="10" id="x51-ks-Eiu"/>
                                         <constraint firstItem="0Qw-pp-NA5" firstAttribute="top" secondItem="qf2-Cn-NPu" secondAttribute="top" id="x5c-ff-iCD"/>
                                         <constraint firstItem="eHp-Ao-d3J" firstAttribute="top" secondItem="qf2-Cn-NPu" secondAttribute="top" id="xlP-XQ-hfJ"/>
                                     </constraints>
                                 </view>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="59" id="Lxe-Ja-I8R"/>
-                                    <constraint firstAttribute="width" constant="200" id="uGw-e5-faa"/>
+                                    <constraint firstAttribute="width" constant="220" id="uGw-e5-faa"/>
                                 </constraints>
-                                <blurEffect style="light"/>
+                                <blurEffect style="dark"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="5"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                </userDefinedRuntimeAttributes>
                             </visualEffectView>
                             <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PXX-rN-Rgl">
-                                <rect key="frame" x="696" y="314" width="200" height="100"/>
+                                <rect key="frame" x="612" y="275" width="200" height="100"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="Z9d-OM-kMp">
                                     <rect key="frame" x="0.0" y="0.0" width="200" height="100"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -122,7 +122,7 @@
                                             </connections>
                                         </slider>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="tint" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="l6v-ag-tq8">
-                                            <rect key="frame" x="0.0" y="71.5" width="35" height="17"/>
+                                            <rect key="frame" x="0.0" y="71.666666666666686" width="35" height="17"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
@@ -134,7 +134,7 @@
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="temp" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ODj-IA-Dzs">
-                                            <rect key="frame" x="0.0" y="33.5" width="35" height="17"/>
+                                            <rect key="frame" x="0.0" y="33.666666666666686" width="35" height="17"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
@@ -160,10 +160,16 @@
                                     <constraint firstAttribute="width" constant="200" id="JIf-gn-orO"/>
                                     <constraint firstAttribute="height" constant="100" id="iPc-Rs-WQ7"/>
                                 </constraints>
-                                <blurEffect style="light"/>
+                                <blurEffect style="dark"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="5"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                </userDefinedRuntimeAttributes>
                             </visualEffectView>
                             <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hle-Gy-2yt">
-                                <rect key="frame" x="696" y="254" width="200" height="60"/>
+                                <rect key="frame" x="612" y="215" width="200" height="60"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="eWn-gG-LTO">
                                     <rect key="frame" x="0.0" y="0.0" width="200" height="60"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -175,7 +181,7 @@
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="value:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3vc-l2-bzF">
-                                            <rect key="frame" x="0.0" y="36.5" width="38" height="17"/>
+                                            <rect key="frame" x="0.0" y="36.666666666666657" width="38" height="17"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
@@ -200,13 +206,19 @@
                                     <constraint firstAttribute="height" constant="60" id="Fsg-UX-z4L"/>
                                     <constraint firstAttribute="width" constant="200" id="xQf-im-P81"/>
                                 </constraints>
-                                <blurEffect style="light"/>
+                                <blurEffect style="dark"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="5"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                </userDefinedRuntimeAttributes>
                             </visualEffectView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="PXX-rN-Rgl" secondAttribute="bottom" id="6BI-8s-3Dh"/>
-                            <constraint firstItem="SME-Eq-zmL" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" constant="10" id="6qv-4J-M0g"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="SME-Eq-zmL" secondAttribute="bottom" constant="10" id="6qv-4J-M0g"/>
                             <constraint firstAttribute="trailing" secondItem="PXX-rN-Rgl" secondAttribute="trailing" id="F8H-b8-byO"/>
                             <constraint firstItem="PXX-rN-Rgl" firstAttribute="top" secondItem="hle-Gy-2yt" secondAttribute="bottom" id="cTm-4U-j58"/>
                             <constraint firstAttribute="trailing" secondItem="hle-Gy-2yt" secondAttribute="trailing" id="gZL-GX-jN8"/>
@@ -228,4 +240,10 @@
             <point key="canvasLocation" x="0.6696428571428571" y="102.89855072463769"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="icon_flashon" width="30" height="30"/>
+        <image name="icon_inverse" width="30" height="30"/>
+        <image name="icon_pip" width="30" height="30"/>
+        <image name="toolbar_icon_set" width="30" height="30"/>
+    </resources>
 </document>

@@ -7,32 +7,13 @@
 //
 
 #import "XDXCameraHandler.h"
-#import <UIKit/UIKit.h>
-
 #import "XDXCameraModel.h"
-#import "sys/utsname.h"
-
-#define IPAD UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad     // if current device is ipad
-
-typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
-    TVUIPhoneNone = 9999,
-    TVUIPhone5 = 5,
-    TVUIPhone5S,
-    TVUIPhone6,
-    TVUIPhone6S,
-    TVUIPhone7,
-    TVUIPhone8,
-    TVUIPhoneX = 10,
-    TVUIPhoneXR = 11,
-    TVUIPhoneXS = 11,
-    TVUIPhoneXSMAX = 11,
-};
 
 @interface XDXCameraHandler ()<AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate>
 
-@property (nonatomic, strong) AVCaptureSession *session;
-@property (nonatomic, strong) AVCaptureDeviceInput *input;
-@property (nonatomic, strong) AVCaptureVideoDataOutput *videoDataOutput;
+@property (nonatomic, strong) AVCaptureSession           *session;
+@property (nonatomic, strong) AVCaptureDeviceInput       *input;
+@property (nonatomic, strong) AVCaptureVideoDataOutput   *videoDataOutput;
 @property (nonatomic, strong) AVCaptureVideoPreviewLayer *videoPreviewLayer;
 
 @property (nonatomic, assign) int captureVideoFPS;
@@ -42,6 +23,7 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
 @implementation XDXCameraHandler
 
 #pragma mark - Public
+#pragma mark Main Method
 - (void)startRunning {
     [self.session startRunning];
 }
@@ -50,20 +32,9 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
     [self.session stopRunning];
 }
 
-- (void)switchCamera {
-    [self switchCameraWithSession:self.session
-                            input:self.input
-                      videoFormat:self.cameraModel.videoFormat
-                 resolutionHeight:self.cameraModel.resolutionHeight
-                        frameRate:self.cameraModel.frameRate];
-}
-
 - (void)configureCameraWithModel:(XDXCameraModel *)model {
-    self.cameraModel = model;
-    
     NSError *error = nil;
     AVCaptureSession *session = [[AVCaptureSession alloc] init];
-    self.session = session;
     
     // Set resolution
     session.sessionPreset = model.preset;
@@ -112,10 +83,29 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
     
     // Set flash mode
     if ([device hasFlash]){
-        if ([device isFlashModeSupported:model.flashMode]) {
-            [device setFlashMode:model.flashMode];
-        }else {
-            NSLog(@"The device not support current flash mode : %ld!",model.flashMode);
+        if (@available(iOS 10.0, *)) {
+            NSArray *outputs = session.outputs;
+            for (AVCaptureOutput *output in outputs) {
+                if ([output isMemberOfClass:[AVCapturePhotoOutput class]]) {
+                    AVCapturePhotoOutput *photoOutput = (AVCapturePhotoOutput *)output;
+                    BOOL flashSupported = [[photoOutput supportedFlashModes] containsObject:@(model.flashMode)];
+                    if (flashSupported) {
+                        AVCapturePhotoSettings *photoSettings = photoOutput.photoSettingsForSceneMonitoring;
+                        photoSettings.flashMode = AVCaptureFlashModeAuto;
+                    }else {
+                        NSLog(@"The device not support current flash mode : %ld!",model.flashMode);
+                    }
+                }
+            }
+        } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            if ([device isFlashModeSupported:model.flashMode]) {
+                [device setFlashMode:model.flashMode];
+            }else {
+                NSLog(@"The device not support current flash mode : %ld!",model.flashMode);
+            }
+#pragma clang diagnostic pop
         }
     }else {
         NSLog(@"The device not support flash!");
@@ -134,8 +124,6 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
         NSLog(@"Configure device input failed:%@",error.localizedDescription);
         return;
     }
-    
-    self.input = input;
     [session addInput:input];
     
     // Conigure and add output
@@ -143,7 +131,6 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
     AVCaptureAudioDataOutput *audioDataOutput = [[AVCaptureAudioDataOutput alloc] init];
     [session addOutput:videoDataOutput];
     [session addOutput:audioDataOutput];
-    self.videoDataOutput = videoDataOutput;
     
     videoDataOutput.videoSettings = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:model.videoFormat]
                                                                 forKey:(id)kCVPixelBufferPixelFormatTypeKey];
@@ -157,19 +144,12 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
     
     // Set video Stabilization
     if (model.isEnableVideoStabilization) {
-        // iPhoneXS 在开启防抖旋转到UIDeviceOrientationLandscapeLeft时渲染会出错,故暂时关掉iPhone X以上机型的防抖功能
-        if (![XDXCameraHandler getIsIpad]) {
-            if ([XDXCameraHandler compareIsGreaterEqualDeviceNum:TVUIPhoneXS]) {
-                [self adjustVideoStabilizationWithOutput:videoDataOutput];
-            }
-        }
+        [self adjustVideoStabilizationWithOutput:videoDataOutput];
     }
     
     // Set video preview
     CALayer *previewViewLayer = [model.previewView layer];
-    
     AVCaptureVideoPreviewLayer *videoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:session];
-    self.videoPreviewLayer = videoPreviewLayer;
     previewViewLayer.backgroundColor = [[UIColor blackColor] CGColor];
     CGRect frame = [previewViewLayer bounds];
     NSLog(@"previewViewLayer = %@",NSStringFromCGRect(frame));
@@ -184,6 +164,25 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
     }
     
     [previewViewLayer insertSublayer:videoPreviewLayer atIndex:0];
+    
+    self.input             = input;
+    self.cameraModel       = model;
+    self.session           = session;
+    self.videoDataOutput   = videoDataOutput;
+    self.videoPreviewLayer = videoPreviewLayer;
+}
+
+#pragma mark Camera Setting
+- (void)switchCamera {
+    AVCaptureDevicePosition newPosition = [[self.input device] position] == AVCaptureDevicePositionBack ? AVCaptureDevicePositionFront : AVCaptureDevicePositionBack;
+    
+    self.cameraModel.position = newPosition;
+    [self setCameraPosition:newPosition
+                    session:self.session
+                      input:self.input
+                videoFormat:self.cameraModel.videoFormat
+           resolutionHeight:self.cameraModel.resolutionHeight
+                  frameRate:self.cameraModel.frameRate];
 }
 
 - (void)setCameraResolutionByActiveFormatWithHeight:(int)height {
@@ -234,7 +233,7 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
 
 - (void)setFocusPoint:(CGPoint)point {
     if ([self.input.device isFocusPointOfInterestSupported]) {
-        CGPoint convertedFocusPoint = [self convertToPointOfInterestFromViewCoordinates:point];
+        CGPoint convertedFocusPoint = [self convertToPointOfInterestFromViewCoordinates:point captureVideoPreviewLayer:self.videoPreviewLayer];
         [self autoFocusAtPoint:convertedFocusPoint];
     }else {
         NSLog(@"Current device not support focus");
@@ -254,14 +253,13 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
 }
 
 - (void)setTorchState:(BOOL)isOpen {
-    [self setTorchState:isOpen session:self.session device:self.input.device];
+    [self setTorchState:isOpen device:self.input.device];
 }
 
 - (void)adjustVideoOrientationByScreenOrientation:(UIDeviceOrientation)orientation {
     [self adjustVideoOrientationByScreenOrientation:orientation
                                        previewFrame:self.cameraModel.previewView.frame
                                        previewLayer:self.videoPreviewLayer
-                                            session:self.session
                                         videoOutput:self.videoDataOutput];
 }
 
@@ -279,15 +277,48 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
     [self setWhiteBlanceValueByTint:tint device:self.input.device];
 }
 
+#pragma mark Video Stabilization
+-(void)adjustVideoStabilizationWithOutput:(AVCaptureVideoDataOutput *)output {
+    NSArray *devices = nil;
+    
+    if (@available(iOS 10.0, *)) {
+        AVCaptureDeviceDiscoverySession *deviceDiscoverySession =  [AVCaptureDeviceDiscoverySession discoverySessionWithDeviceTypes:@[AVCaptureDeviceTypeBuiltInWideAngleCamera] mediaType:AVMediaTypeVideo position:self.cameraModel.position];
+        devices = deviceDiscoverySession.devices;
+    } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+#pragma clang diagnostic pop
+    }
+    
+    for(AVCaptureDevice *device in devices){
+        if([device hasMediaType:AVMediaTypeVideo]){
+            if([device.activeFormat isVideoStabilizationModeSupported:AVCaptureVideoStabilizationModeAuto]) {
+                for(AVCaptureConnection *connection in output.connections) {
+                    for(AVCaptureInputPort *port in [connection inputPorts]) {
+                        if([[port mediaType] isEqual:AVMediaTypeVideo]) {
+                            if(connection.supportsVideoStabilization) {
+                                connection.preferredVideoStabilizationMode = AVCaptureVideoStabilizationModeStandard;
+                                NSLog(@"activeVideoStabilizationMode = %ld",(long)connection.activeVideoStabilizationMode);
+                            }else {
+                                NSLog(@"connection don't support video stabilization");
+                            }
+                        }
+                    }
+                }
+            }else{
+                NSLog(@"device don't support video stablization");
+            }
+        }
+    }
+}
 #pragma mark - Private
-- (void)switchCameraWithSession:(AVCaptureSession *)session input:(AVCaptureDeviceInput *)input videoFormat:(OSType)videoFormat resolutionHeight:(CGFloat)resolutionHeight frameRate:(int)frameRate {
+- (void)setCameraPosition:(AVCaptureDevicePosition)position session:(AVCaptureSession *)session input:(AVCaptureDeviceInput *)input videoFormat:(OSType)videoFormat resolutionHeight:(CGFloat)resolutionHeight frameRate:(int)frameRate {
     if (input) {
         [session beginConfiguration];
         [session removeInput:input];
         
-        AVCaptureDevicePosition newPosition = [[input device] position] == AVCaptureDevicePositionBack ? AVCaptureDevicePositionFront : AVCaptureDevicePositionBack;
-        self.cameraModel.position = newPosition;
-        AVCaptureDevice *device = device = [self.class getCaptureDevicePosition:newPosition];
+        AVCaptureDevice *device = [self.class getCaptureDevicePosition:position];
         
         NSError *error = nil;
         AVCaptureDeviceInput *newInput = [AVCaptureDeviceInput deviceInputWithDevice:device
@@ -325,20 +356,30 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
         BOOL isSuccess = [self.class setCameraFrameRateAndResolutionWithFrameRate:frameRate
                                                               andResolutionHeight:resolutionHeight
                                                                         bySession:session
-                                                                         position:newPosition
+                                                                         position:position
                                                                       videoFormat:videoFormat];
         
         if (!isSuccess) {
             NSLog(@"%s: Set resolution and frame rate failed.",__func__);
         }
         
-        [self.session commitConfiguration];
+        [session commitConfiguration];
     }
 }
 
-
 + (AVCaptureDevice *)getCaptureDevicePosition:(AVCaptureDevicePosition)position {
-    NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+    NSArray *devices = nil;
+    
+    if (@available(iOS 10.0, *)) {
+        AVCaptureDeviceDiscoverySession *deviceDiscoverySession =  [AVCaptureDeviceDiscoverySession discoverySessionWithDeviceTypes:@[AVCaptureDeviceTypeBuiltInWideAngleCamera] mediaType:AVMediaTypeVideo position:position];
+        devices = deviceDiscoverySession.devices;
+    } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+#pragma clang diagnostic pop
+    }
+    
     for (AVCaptureDevice *device in devices) {
         if (position == device.position) {
             return device;
@@ -347,34 +388,9 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
     return NULL;
 }
 
--(void)adjustVideoStabilizationWithOutput:(AVCaptureVideoDataOutput *)output {
-    NSArray *devices = [AVCaptureDevice devices];
-    for(AVCaptureDevice *device in devices){
-        if([device hasMediaType:AVMediaTypeVideo]){
-            if([device.activeFormat isVideoStabilizationModeSupported:AVCaptureVideoStabilizationModeAuto]){
-                for(AVCaptureConnection *connection in output.connections) {
-                    for(AVCaptureInputPort *port in [connection inputPorts]) {
-                        if([[port mediaType] isEqual:AVMediaTypeVideo]) {
-                            if(connection.supportsVideoStabilization) {
-                                connection.preferredVideoStabilizationMode = AVCaptureVideoStabilizationModeStandard;
-                                NSLog(@"activeVideoStabilizationMode = %ld",(long)connection.activeVideoStabilizationMode);
-                            }else{
-                                NSLog(@"connection don't support video stabilization");
-                            }
-                        }
-                    }
-                }
-            }else{
-                NSLog(@"device don't support video stablization");
-            }
-        }
-    }
-}
-
 #pragma mark Resolution
 - (int)getDeviceSupportMaxResolutionByFrameRate:(int)frameRate position:(AVCaptureDevicePosition)position videoFormat:(OSType)videoFormat {
     int maxResolutionHeight = 0;
-    
     AVCaptureDevice *captureDevice = [self.class getCaptureDevicePosition:position];
     for(AVCaptureDeviceFormat *vFormat in [captureDevice formats]) {
         CMFormatDescriptionRef description = vFormat.formatDescription;
@@ -389,8 +405,6 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
     
     return maxResolutionHeight;
 }
-
-/******************************* Only Fit : Frame Rate < 30 *******************************************************/
 
 - (int)getMaxSupportResolutionByPreset {
     AVCaptureSession *session = self.session;
@@ -410,6 +424,9 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
 }
 
 - (void)setCameraResolutionByPresetWithHeight:(int)height {
+    /*
+     Note: the method only support your frame rate <= 30 because we must use `activeFormat` when frame rate > 30, the `activeFormat` and `sessionPreset` are exclusive
+     */
     AVCaptureSessionPreset preset = [self getSessionPresetByResolutionHeight:height];
     if ([self.session.sessionPreset isEqualToString:preset]) {
         NSLog(@"Needn't to set camera resolution repeatly !");
@@ -456,11 +473,9 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
     }
 }
 
-
-
 #pragma mark FPS
-// Only for frame rate <= 30
 - (void)setCameraForLFRWithFrameRate:(int)frameRate {
+    // Only for frame rate <= 30
     AVCaptureDevice *captureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     [captureDevice lockForConfiguration:NULL];
     [captureDevice setActiveVideoMinFrameDuration:CMTimeMake(1, frameRate)];
@@ -503,7 +518,6 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
 
 + (int)getMaxFrameRateByCurrentResolutionWithResolutionHeight:(int)resolutionHeight position:(AVCaptureDevicePosition)position videoFormat:(OSType)videoFormat {
     int maxFrameRate = 0;
-    
     AVCaptureDevice *captureDevice = [self getCaptureDevicePosition:position];
     for(AVCaptureDeviceFormat *vFormat in [captureDevice formats]) {
         CMFormatDescriptionRef description = vFormat.formatDescription;
@@ -535,10 +549,8 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
 }
 
 #pragma mark Focus
-- (CGPoint)convertToPointOfInterestFromViewCoordinates:(CGPoint)viewCoordinates {
-    AVCaptureVideoPreviewLayer *captureVideoPreviewLayer = self.videoPreviewLayer;
+- (CGPoint)convertToPointOfInterestFromViewCoordinates:(CGPoint)viewCoordinates captureVideoPreviewLayer:(AVCaptureVideoPreviewLayer *)captureVideoPreviewLayer {
     CGPoint pointOfInterest = CGPointMake(.5f, .5f);
-    
     CGSize frameSize = [captureVideoPreviewLayer frame].size;
     
     if ([captureVideoPreviewLayer.connection isVideoMirrored]) {
@@ -547,6 +559,7 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
 
     // Convert UIKit coordinate to Focus Point(0.0~1.1)
     pointOfInterest = [captureVideoPreviewLayer captureDevicePointOfInterestForPoint:viewCoordinates];
+    
     // NSLog(@"Focus - Auto test: %@",NSStringFromCGPoint(pointOfInterest));
     
     return pointOfInterest;
@@ -562,21 +575,18 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
             [device setFocusPointOfInterest:point];
             [device setFocusMode:AVCaptureFocusModeAutoFocus];
             [device unlockForConfiguration];
-        } else {
-            
         }
     }
 }
 
-- (CGPoint)manualConvertFocusPoint:(CGPoint)point {
-    AVCaptureVideoPreviewLayer *captureVideoPreviewLayer = self.videoPreviewLayer;
+- (CGPoint)manualConvertFocusPoint:(CGPoint)point frameSize:(CGSize)frameSize captureVideoPreviewLayer:(AVCaptureVideoPreviewLayer *)captureVideoPreviewLayer position:(AVCaptureDevicePosition)position videoDataOutput:(AVCaptureVideoDataOutput *)videoDataOutput input:(AVCaptureDeviceInput *)input {
     CGPoint pointOfInterest = CGPointMake(.5f, .5f);
-    CGSize frameSize = self.cameraModel.previewView.frame.size;
-    if ([[self.videoDataOutput connectionWithMediaType:AVMediaTypeVideo] isVideoMirrored]) {
+    
+    if ([[videoDataOutput connectionWithMediaType:AVMediaTypeVideo] isVideoMirrored]) {
         point.x = frameSize.width - point.x;
     }
     
-    for (AVCaptureInputPort *port in [self.input ports]) {
+    for (AVCaptureInputPort *port in [input ports]) {
         if ([port mediaType] == AVMediaTypeVideo) {
             CGRect cleanAperture = CMVideoFormatDescriptionGetCleanAperture([port formatDescription], YES);
             CGSize resolutionSize = cleanAperture.size;
@@ -624,7 +634,7 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
         }
     }
     
-    if (self.cameraModel.position == AVCaptureDevicePositionBack) {
+    if (position == AVCaptureDevicePositionBack) {
         if (captureVideoPreviewLayer.connection.videoOrientation == AVCaptureVideoOrientationLandscapeLeft) {
             pointOfInterest = CGPointMake(1-pointOfInterest.x, 1-pointOfInterest.y);
         }
@@ -646,47 +656,44 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
 }
 
 #pragma mark Torch
-- (void)setTorchState:(BOOL)isOpen session:(AVCaptureSession *)session device:(AVCaptureDevice *)device {
+- (void)setTorchState:(BOOL)isOpen device:(AVCaptureDevice *)device {
     if ([device hasTorch]) {
         NSError *error;
-        [session beginConfiguration];
         [device lockForConfiguration:&error];
         device.torchMode = isOpen ? AVCaptureTorchModeOn : AVCaptureTorchModeOff;
         [device unlockForConfiguration];
-        [session commitConfiguration];
     }else {
         NSLog(@"The device not support torch!");
     }
 }
 
 #pragma mark Orientation
-- (void)adjustVideoOrientationByScreenOrientation:(UIDeviceOrientation)orientation previewFrame:(CGRect)previewFrame previewLayer:(AVCaptureVideoPreviewLayer *)previewLayer session:(AVCaptureSession *)session videoOutput:(AVCaptureVideoDataOutput *)videoOutput {
-    if(session != NULL) {
-        [session beginConfiguration];
-        
-        [previewLayer setFrame:previewFrame];
-        
-        switch (orientation) {
-            case UIInterfaceOrientationPortrait:
-                [self adjustAVOutputDataOrientation:AVCaptureVideoOrientationPortrait videoOutput:videoOutput];
-                break;
-            case UIInterfaceOrientationPortraitUpsideDown:
-                [self adjustAVOutputDataOrientation:AVCaptureVideoOrientationPortraitUpsideDown videoOutput:videoOutput];
-                break;
-            case UIInterfaceOrientationLandscapeLeft:
-                [[previewLayer connection] setVideoOrientation:AVCaptureVideoOrientationLandscapeLeft];
-                [self adjustAVOutputDataOrientation:AVCaptureVideoOrientationLandscapeLeft videoOutput:videoOutput];
-                break;
-            case UIInterfaceOrientationLandscapeRight:
-                [[previewLayer connection] setVideoOrientation:AVCaptureVideoOrientationLandscapeRight];
-                [self adjustAVOutputDataOrientation:AVCaptureVideoOrientationLandscapeRight videoOutput:videoOutput];
-                break;
-                
-            default:
-                break;
-        }
-        
-        [session commitConfiguration];
+- (void)adjustVideoOrientationByScreenOrientation:(UIDeviceOrientation)orientation previewFrame:(CGRect)previewFrame previewLayer:(AVCaptureVideoPreviewLayer *)previewLayer videoOutput:(AVCaptureVideoDataOutput *)videoOutput {
+    [previewLayer setFrame:previewFrame];
+    
+    switch (orientation) {
+        case UIInterfaceOrientationPortrait:
+            [self adjustAVOutputDataOrientation:AVCaptureVideoOrientationPortrait
+                                    videoOutput:videoOutput];
+            break;
+        case UIInterfaceOrientationPortraitUpsideDown:
+            [self adjustAVOutputDataOrientation:AVCaptureVideoOrientationPortraitUpsideDown
+                                    videoOutput:videoOutput];
+            break;
+        case UIInterfaceOrientationLandscapeLeft:
+            [[previewLayer connection] setVideoOrientation:AVCaptureVideoOrientationLandscapeLeft];
+            [self adjustAVOutputDataOrientation:AVCaptureVideoOrientationLandscapeLeft
+                                    videoOutput:videoOutput];
+            break;
+        case UIInterfaceOrientationLandscapeRight:
+            [[previewLayer connection] setVideoOrientation:AVCaptureVideoOrientationLandscapeRight];
+            [self adjustAVOutputDataOrientation:AVCaptureVideoOrientationLandscapeRight
+                                    videoOutput:videoOutput];
+            break;
+            
+        default:
+            break;
+            
     }
 }
 
@@ -712,9 +719,9 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
 #pragma mark White Balance
 -(AVCaptureWhiteBalanceGains)clampGains:(AVCaptureWhiteBalanceGains)gains toMinVal:(CGFloat)minVal andMaxVal:(CGFloat)maxVal {
     AVCaptureWhiteBalanceGains tmpGains = gains;
-    tmpGains.blueGain = MAX(MIN(tmpGains.blueGain, maxVal), minVal);
-    tmpGains.redGain = MAX(MIN(tmpGains.redGain, maxVal), minVal);
-    tmpGains.greenGain = MAX(MIN(tmpGains.greenGain, maxVal), minVal);
+    tmpGains.blueGain   = MAX(MIN(tmpGains.blueGain , maxVal), minVal);
+    tmpGains.redGain    = MAX(MIN(tmpGains.redGain  , maxVal), minVal);
+    tmpGains.greenGain  = MAX(MIN(tmpGains.greenGain, maxVal), minVal);
     
     return tmpGains;
 }
@@ -799,49 +806,5 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
 }
 
 #pragma mark - Other
-+ (BOOL)compareIsGreaterEqualDeviceNum:(TVUIPhoneType)iPhoneType {
-    if ([self getIsIpad]) {
-        return NO;
-    }
-    
-    struct utsname systemInfo;
-    uname(&systemInfo);
-    NSString    *deviceModel = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
-    NSUInteger  typeCode;
-    NSString    *originLocStr;
-    
-    originLocStr = [deviceModel substringFromIndex:6];    // cut iphone
-    
-    NSRange rangeComma      = [originLocStr  rangeOfString:@","];
-    NSString *typeCodeStr   = [originLocStr  substringToIndex:rangeComma.location];
-    typeCode                = [typeCodeStr   integerValue];
-    
-    // Compare iphone by type code ,ex :iPhone9,1 is iPhone 7;
-    if (typeCode >= iPhoneType) {
-        return YES;
-    }else {
-        return NO;
-    }
-    
-}
-
-//如果想要判断设备是ipad，要用如下方法
-+ (BOOL)getIsIpad {
-    NSString *deviceType = [UIDevice currentDevice].model;
-    
-    if([deviceType isEqualToString:@"iPhone"]) {
-        //iPhone
-        return NO;
-    }
-    else if([deviceType isEqualToString:@"iPod touch"]) {
-        //iPod Touch
-        return NO;
-    }
-    else if([deviceType isEqualToString:@"iPad"]) {
-        //iPad
-        return YES;
-    }
-    return NO;
-}
 
 @end

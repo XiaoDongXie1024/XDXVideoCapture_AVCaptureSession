@@ -10,7 +10,21 @@
 
 @implementation XDXCameraModel
 
-- (instancetype)initWithPreviewView:(UIView *)previewView preset:(AVCaptureSessionPreset)preset frameRate:(int)frameRate resolutionHeight:(int)resolutionHeight videoFormat:(OSType)videoFormat torchMode:(AVCaptureTorchMode)torchMode focusMode:(AVCaptureFocusMode)focusMode exposureMode:(AVCaptureExposureMode)exposureMode flashMode:(AVCaptureFlashMode)flashMode whiteBalanceMode:(AVCaptureWhiteBalanceMode)whiteBalanceMode position:(AVCaptureDevicePosition)position videoGravity:(AVLayerVideoGravity)videoGravity videoOrientation:(AVCaptureVideoOrientation)videoOrientation isEnableVideoStabilization:(BOOL)isEnableVideoStabilization {
+- (instancetype)initWithPreviewView:(UIView *)previewView
+                             preset:(AVCaptureSessionPreset)preset
+                          frameRate:(int)frameRate
+                   resolutionHeight:(int)resolutionHeight
+                        videoFormat:(OSType)videoFormat
+                          torchMode:(AVCaptureTorchMode)torchMode
+                          focusMode:(AVCaptureFocusMode)focusMode
+                       exposureMode:(AVCaptureExposureMode)exposureMode
+                          flashMode:(AVCaptureFlashMode)flashMode
+                   whiteBalanceMode:(AVCaptureWhiteBalanceMode)whiteBalanceMode
+                           position:(AVCaptureDevicePosition)position
+                       videoGravity:(AVLayerVideoGravity)videoGravity
+                   videoOrientation:(AVCaptureVideoOrientation)videoOrientation
+         isEnableVideoStabilization:(BOOL)isEnableVideoStabilization {
+    
     if (self = [super init]) {
         self.previewView = previewView;
         self.preset = preset;

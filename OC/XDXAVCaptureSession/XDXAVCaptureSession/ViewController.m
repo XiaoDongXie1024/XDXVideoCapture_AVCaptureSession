@@ -15,13 +15,14 @@
 
 @interface ViewController ()<XDXCameraHandlerDelegate>
 
-@property (nonatomic, strong) XDXCameraHandler *cameraHandler;
-@property (nonatomic, strong) XDXSettingViewController *settingVC;
+@property (nonatomic, strong) XDXCameraHandler              *cameraHandler;
+@property (nonatomic, strong) XDXSettingViewController      *settingVC;
 
-@property (nonatomic, strong) XDXAdjustFocusView *focusView;
-@property (weak, nonatomic) IBOutlet UISlider *exposureSlider;
-@property (weak, nonatomic) IBOutlet UIVisualEffectView *exposureView;
-@property (weak, nonatomic) IBOutlet UIVisualEffectView *whiteBalanceView;
+/************************ UI *********************************/
+@property (nonatomic, strong) XDXAdjustFocusView            *focusView;
+@property (weak, nonatomic) IBOutlet UISlider               *exposureSlider;
+@property (weak, nonatomic) IBOutlet UIVisualEffectView     *exposureView;
+@property (weak, nonatomic) IBOutlet UIVisualEffectView     *whiteBalanceView;
 
 @end
 
@@ -56,47 +57,56 @@
                                                        videoOrientation:AVCaptureVideoOrientationLandscapeRight
                                              isEnableVideoStabilization:YES];
     
-    XDXCameraHandler *handler = [[XDXCameraHandler alloc] init];
-    handler.delegate = self;
-    self.cameraHandler = handler;
+    XDXCameraHandler *handler   = [[XDXCameraHandler alloc] init];
+    self.cameraHandler          = handler;
+    handler.delegate            = self;
     [handler configureCameraWithModel:model];
-
-    dispatch_queue_t queue = dispatch_queue_create("start_camera", NULL);
-    dispatch_async(queue, ^{
-        [handler startRunning];
-    });
+    [handler startRunning];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveResolutionChanged:) name:kNotifyResolutionChanged object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveFrameRateChanged:) name:kNotifyFrameRateChanged object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(receiveResolutionChanged:)
+                                                 name:kNotifyResolutionChanged
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(receiveFrameRateChanged:)
+                                                 name:kNotifyFrameRateChanged
+                                               object:nil];
 }
 
-- (void) configureData {
+- (void)configureData {
     self.settingVC = [[XDXSettingViewController alloc] init];
 }
 
 #pragma mark - UI
 - (void)setupUI {
-    UITapGestureRecognizer *singleClickGestureRecognizer = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(handleSingleClickGesture:)];
+    // Gesture
+    UITapGestureRecognizer *singleClickGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                                                   action:@selector(handleSingleClickGesture:)];
     [self.view addGestureRecognizer:singleClickGestureRecognizer];
     
+    // Orientation
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(deviceOrientationDidChange:)
                                                  name:UIDeviceOrientationDidChangeNotification
                                                object:nil];
     
+    // Focus View
     XDXAdjustFocusView *focusView = [[XDXAdjustFocusView alloc] initWithFrame:CGRectMake(0, 0, 80, 80)];
-    self.focusView = focusView;
-    focusView.hidden = YES;
+    self.focusView                = focusView;
+    focusView.hidden              = YES;
     [self.view addSubview:focusView];
     
+    // Exposure slider
     [self.cameraHandler setExposureWithNewValue:0];
     self.exposureSlider.maximumValue = [self.cameraHandler getMaxExposureValue];
     self.exposureSlider.minimumValue = [self.cameraHandler getMinExposureValue];
     self.exposureSlider.value = 0;
     [self.exposureSlider addTarget:self action:@selector(sliderValueChanged:) forControlEvents:UIControlEventValueChanged];
 //    NSLog(@"max:%f,min:%f",self.exposureSlider.maximumValue,self.exposureSlider.minimumValue);
-    [self.view bringSubviewToFront: self.exposureView];
+    
+    [self.view bringSubviewToFront:self.exposureView];
     [self.view bringSubviewToFront:self.whiteBalanceView];
 }
 
@@ -161,14 +171,6 @@
 
 #pragma mark - Delegate
 - (void)xdxCaptureOutput:(AVCaptureOutput *)output didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
-    CVPixelBufferRef pix = CMSampleBufferGetImageBuffer(sampleBuffer);
-    
-    static int i = 0;
-    i++;
-    
-    if (i % 10 == 0) {
-//        NSLog(@"width:%zu, fps: %d",CVPixelBufferGetWidth(pix),[self.cameraHandler getCaputreViedeoFPS]);
-    }
 }
 
 - (void)xdxCaptureOutput:(AVCaptureOutput *)output didDropSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
