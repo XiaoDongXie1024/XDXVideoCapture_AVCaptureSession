@@ -67,6 +67,13 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (int)getMaxFrameRateByCurrentResolution;
 
+
+/**
+ * Get camera ouput real time width and height
+ */
+- (int)getRealtimeResolutionHeight;
+- (int)getRealtimeResolutionWidth;
+
 /**
  * Get video fps for real time
  */

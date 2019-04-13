@@ -23,6 +23,10 @@
 @property (weak, nonatomic) IBOutlet UISlider               *exposureSlider;
 @property (weak, nonatomic) IBOutlet UIVisualEffectView     *exposureView;
 @property (weak, nonatomic) IBOutlet UIVisualEffectView     *whiteBalanceView;
+@property (weak, nonatomic) IBOutlet UILabel                *resolutionLb;
+@property (weak, nonatomic) IBOutlet UILabel                *fpsLb;
+
+
 
 @end
 
@@ -108,6 +112,11 @@
     
     [self.view bringSubviewToFront:self.exposureView];
     [self.view bringSubviewToFront:self.whiteBalanceView];
+    
+    [NSTimer scheduledTimerWithTimeInterval:2 repeats:YES block:^(NSTimer * _Nonnull timer) {
+        self.fpsLb.text = [NSString stringWithFormat:@"%d",[self.cameraHandler getCaputreViedeoFPS]];
+        self.resolutionLb.text = [NSString stringWithFormat:@"w:%d,h:%d",[self.cameraHandler getRealtimeResolutionWidth], [self.cameraHandler getRealtimeResolutionHeight]];
+    }];
 }
 
 #pragma mark - Gesture

@@ -17,6 +17,8 @@
 @property (nonatomic, strong) AVCaptureVideoPreviewLayer *videoPreviewLayer;
 
 @property (nonatomic, assign) int captureVideoFPS;
+@property (nonatomic, assign) int realTimeResolutionWidth;
+@property (nonatomic, assign) int realTimeResolutionHeight;
 
 @end
 
@@ -277,41 +279,14 @@
     [self setWhiteBlanceValueByTint:tint device:self.input.device];
 }
 
-#pragma mark Video Stabilization
--(void)adjustVideoStabilizationWithOutput:(AVCaptureVideoDataOutput *)output {
-    NSArray *devices = nil;
-    
-    if (@available(iOS 10.0, *)) {
-        AVCaptureDeviceDiscoverySession *deviceDiscoverySession =  [AVCaptureDeviceDiscoverySession discoverySessionWithDeviceTypes:@[AVCaptureDeviceTypeBuiltInWideAngleCamera] mediaType:AVMediaTypeVideo position:self.cameraModel.position];
-        devices = deviceDiscoverySession.devices;
-    } else {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
-#pragma clang diagnostic pop
-    }
-    
-    for(AVCaptureDevice *device in devices){
-        if([device hasMediaType:AVMediaTypeVideo]){
-            if([device.activeFormat isVideoStabilizationModeSupported:AVCaptureVideoStabilizationModeAuto]) {
-                for(AVCaptureConnection *connection in output.connections) {
-                    for(AVCaptureInputPort *port in [connection inputPorts]) {
-                        if([[port mediaType] isEqual:AVMediaTypeVideo]) {
-                            if(connection.supportsVideoStabilization) {
-                                connection.preferredVideoStabilizationMode = AVCaptureVideoStabilizationModeStandard;
-                                NSLog(@"activeVideoStabilizationMode = %ld",(long)connection.activeVideoStabilizationMode);
-                            }else {
-                                NSLog(@"connection don't support video stabilization");
-                            }
-                        }
-                    }
-                }
-            }else{
-                NSLog(@"device don't support video stablization");
-            }
-        }
-    }
+- (int)getRealtimeResolutionWidth {
+    return self.realTimeResolutionWidth;
 }
+
+- (int)getRealtimeResolutionHeight {
+    return self.realTimeResolutionHeight;
+}
+
 #pragma mark - Private
 - (void)setCameraPosition:(AVCaptureDevicePosition)position session:(AVCaptureSession *)session input:(AVCaptureDeviceInput *)input videoFormat:(OSType)videoFormat resolutionHeight:(CGFloat)resolutionHeight frameRate:(int)frameRate {
     if (input) {
@@ -765,6 +740,42 @@
     }
 }
 
+#pragma mark Video Stabilization
+-(void)adjustVideoStabilizationWithOutput:(AVCaptureVideoDataOutput *)output {
+    NSArray *devices = nil;
+    
+    if (@available(iOS 10.0, *)) {
+        AVCaptureDeviceDiscoverySession *deviceDiscoverySession =  [AVCaptureDeviceDiscoverySession discoverySessionWithDeviceTypes:@[AVCaptureDeviceTypeBuiltInWideAngleCamera] mediaType:AVMediaTypeVideo position:self.cameraModel.position];
+        devices = deviceDiscoverySession.devices;
+    } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+#pragma clang diagnostic pop
+    }
+    
+    for(AVCaptureDevice *device in devices){
+        if([device hasMediaType:AVMediaTypeVideo]){
+            if([device.activeFormat isVideoStabilizationModeSupported:AVCaptureVideoStabilizationModeAuto]) {
+                for(AVCaptureConnection *connection in output.connections) {
+                    for(AVCaptureInputPort *port in [connection inputPorts]) {
+                        if([[port mediaType] isEqual:AVMediaTypeVideo]) {
+                            if(connection.supportsVideoStabilization) {
+                                connection.preferredVideoStabilizationMode = AVCaptureVideoStabilizationModeStandard;
+                                NSLog(@"activeVideoStabilizationMode = %ld",(long)connection.activeVideoStabilizationMode);
+                            }else {
+                                NSLog(@"connection don't support video stabilization");
+                            }
+                        }
+                    }
+                }
+            }else{
+                NSLog(@"device don't support video stablization");
+            }
+        }
+    }
+}
+
 #pragma mark - Delegate
 - (void)captureOutput:(AVCaptureOutput *)output didDropSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
     if ([output isKindOfClass:[AVCaptureVideoDataOutput class]] == YES) {
@@ -786,6 +797,9 @@
     
     if ([output isKindOfClass:[AVCaptureVideoDataOutput class]] == YES) {
         [self calculatorCaptureFPS];
+        CVPixelBufferRef pix  = CMSampleBufferGetImageBuffer(sampleBuffer);
+        self.realTimeResolutionWidth  = (int)CVPixelBufferGetWidth(pix);
+        self.realTimeResolutionHeight = (int)CVPixelBufferGetHeight(pix);
         // NSLog(@"capture: video data");
     }else if ([output isKindOfClass:[AVCaptureAudioDataOutput class]] == YES) {
         // NSLog(@"capture: audio data");
