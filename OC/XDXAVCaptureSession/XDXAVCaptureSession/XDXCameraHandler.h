@@ -102,6 +102,14 @@ NS_ASSUME_NONNULL_BEGIN
  * Set video gravity.
  */
 - (void)setVideoGravity:(AVLayerVideoGravity)videoGravity;
+
+
+/**
+ * Set white balance value
+ */
+- (void)setWhiteBlanceValueByTint:(float)tint;
+- (void)setWhiteBlanceValueByTemperature:(float)temperature;
+
 @end
 
 NS_ASSUME_NONNULL_END

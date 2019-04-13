@@ -20,7 +20,8 @@
 
 @property (nonatomic, strong) XDXAdjustFocusView *focusView;
 @property (weak, nonatomic) IBOutlet UISlider *exposureSlider;
-@property (weak, nonatomic) IBOutlet UIView *exposureView;
+@property (weak, nonatomic) IBOutlet UIVisualEffectView *exposureView;
+@property (weak, nonatomic) IBOutlet UIVisualEffectView *whiteBalanceView;
 
 @end
 
@@ -96,6 +97,7 @@
     [self.exposureSlider addTarget:self action:@selector(sliderValueChanged:) forControlEvents:UIControlEventValueChanged];
 //    NSLog(@"max:%f,min:%f",self.exposureSlider.maximumValue,self.exposureSlider.minimumValue);
     [self.view bringSubviewToFront: self.exposureView];
+    [self.view bringSubviewToFront:self.whiteBalanceView];
 }
 
 #pragma mark - Gesture
@@ -146,6 +148,15 @@
         i = 0;
     }
     
+}
+
+
+- (IBAction)temperatureValueChanged:(UISlider *)sender {
+    [self.cameraHandler setWhiteBlanceValueByTemperature:sender.value];
+}
+
+- (IBAction)tintValueChanged:(UISlider *)sender {
+    [self.cameraHandler setWhiteBlanceValueByTint:sender.value];
 }
 
 #pragma mark - Delegate

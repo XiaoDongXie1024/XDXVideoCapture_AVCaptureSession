@@ -270,6 +270,15 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
              previewLayer:self.videoPreviewLayer
                   session:self.session];
 }
+
+- (void)setWhiteBlanceValueByTemperature:(float)temperature {
+    [self setWhiteBlanceValueByTemperature:temperature device:self.input.device];
+}
+
+- (void)setWhiteBlanceValueByTint:(float)tint {
+    [self setWhiteBlanceValueByTint:tint device:self.input.device];
+}
+
 #pragma mark - Private
 - (void)switchCameraWithSession:(AVCaptureSession *)session input:(AVCaptureDeviceInput *)input videoFormat:(OSType)videoFormat resolutionHeight:(CGFloat)resolutionHeight frameRate:(int)frameRate {
     if (input) {
@@ -698,6 +707,55 @@ typedef NS_ENUM(NSUInteger, TVUIPhoneType) {
     [session beginConfiguration];
     [previewLayer setVideoGravity:videoGravity];
     [session commitConfiguration];
+}
+
+#pragma mark White Balance
+-(AVCaptureWhiteBalanceGains)clampGains:(AVCaptureWhiteBalanceGains)gains toMinVal:(CGFloat)minVal andMaxVal:(CGFloat)maxVal {
+    AVCaptureWhiteBalanceGains tmpGains = gains;
+    tmpGains.blueGain = MAX(MIN(tmpGains.blueGain, maxVal), minVal);
+    tmpGains.redGain = MAX(MIN(tmpGains.redGain, maxVal), minVal);
+    tmpGains.greenGain = MAX(MIN(tmpGains.greenGain, maxVal), minVal);
+    
+    return tmpGains;
+}
+
+-(void)setWhiteBlanceValueByTemperature:(CGFloat)temperature device:(AVCaptureDevice *)device {
+    if ([device isWhiteBalanceModeSupported:AVCaptureWhiteBalanceModeLocked]) {
+        [device lockForConfiguration:nil];
+        AVCaptureWhiteBalanceGains currentGains = device.deviceWhiteBalanceGains;
+        CGFloat currentTint = [device temperatureAndTintValuesForDeviceWhiteBalanceGains:currentGains].tint;
+        AVCaptureWhiteBalanceTemperatureAndTintValues tempAndTintValues = {
+            .temperature = temperature,
+            .tint        = currentTint,
+        };
+        
+        AVCaptureWhiteBalanceGains deviceGains = [device deviceWhiteBalanceGainsForTemperatureAndTintValues:tempAndTintValues];
+        CGFloat maxWhiteBalanceGain = device.maxWhiteBalanceGain;
+        deviceGains = [self clampGains:deviceGains toMinVal:1 andMaxVal:maxWhiteBalanceGain];
+        
+        [device setWhiteBalanceModeLockedWithDeviceWhiteBalanceGains:deviceGains completionHandler:nil];
+        [device unlockForConfiguration];
+    }
+}
+
+-(void)setWhiteBlanceValueByTint:(CGFloat)tint device:(AVCaptureDevice *)device {
+    if ([device isWhiteBalanceModeSupported:AVCaptureWhiteBalanceModeLocked]) {
+        [device lockForConfiguration:nil];
+        CGFloat maxWhiteBalaceGain = device.maxWhiteBalanceGain;
+        AVCaptureWhiteBalanceGains currentGains = device.deviceWhiteBalanceGains;
+        currentGains = [self clampGains:currentGains toMinVal:1 andMaxVal:maxWhiteBalaceGain];
+        CGFloat currentTemperature = [device temperatureAndTintValuesForDeviceWhiteBalanceGains:currentGains].temperature;
+        AVCaptureWhiteBalanceTemperatureAndTintValues tempAndTintValues = {
+            .temperature = currentTemperature,
+            .tint        = tint,
+        };
+        
+        AVCaptureWhiteBalanceGains deviceGains = [device deviceWhiteBalanceGainsForTemperatureAndTintValues:tempAndTintValues];
+        deviceGains = [self clampGains:deviceGains toMinVal:1 andMaxVal:maxWhiteBalaceGain];
+        
+        [device setWhiteBalanceModeLockedWithDeviceWhiteBalanceGains:deviceGains completionHandler:nil];
+        [device unlockForConfiguration];
+    }
 }
 
 #pragma mark - Delegate
